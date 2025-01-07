@@ -2,81 +2,94 @@ import 'package:drift/drift.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lakely/domain/db/database.dart';
+import 'package:lakely/domain/service/home_apps_service.dart';
 
-// Состояние HomeApps
-class HomeAppsState extends Equatable {
-  final List<HomeApp> homeApps;
-  final bool isLoading;
-  final String? errorMessage;
-
-  const HomeAppsState({
-    this.homeApps = const [],
-    this.isLoading = false,
-    this.errorMessage,
-  });
-
-  HomeAppsState copyWith({
-    List<HomeApp>? homeApps,
-    bool? isLoading,
-    String? errorMessage,
-  }) {
-    return HomeAppsState(
-      homeApps: homeApps ?? this.homeApps,
-      isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage,
-    );
-  }
+// Абстрактное состояние HomeApps
+abstract class HomeAppsState extends Equatable {
+  const HomeAppsState();
 
   @override
-  List<Object?> get props => [homeApps, isLoading, errorMessage];
+  List<Object?> get props => [];
+}
+
+// Начальное состояние
+class InitialHomeAppsState extends HomeAppsState {
+  const InitialHomeAppsState();
+}
+
+// Состояние загрузки
+class LoadingHomeAppsState extends HomeAppsState {
+  const LoadingHomeAppsState();
+}
+
+// Состояние с данными
+class LoadedHomeAppsState extends HomeAppsState {
+  final List<HomeAppWithDetails> homeApps;
+
+  const LoadedHomeAppsState(this.homeApps);
+
+  @override
+  List<Object?> get props => [homeApps];
+}
+
+// Состояние ошибки
+class ErrorHomeAppsState extends HomeAppsState {
+  final String errorMessage;
+
+  const ErrorHomeAppsState(this.errorMessage);
+
+  @override
+  List<Object?> get props => [errorMessage];
 }
 
 // Cubit для управления состоянием HomeApps
 class HomeAppsCubit extends Cubit<HomeAppsState> {
-  final AppDatabase _db;
+  final HomeAppsService _homeAppsService;
 
-  HomeAppsCubit(this._db) : super(const HomeAppsState());
+  HomeAppsCubit(this._homeAppsService) : super(const InitialHomeAppsState());
+
+  void init() {
+    fetchHomeApps();
+  }
 
   // Загрузка всех HomeApps
   Future<void> fetchHomeApps() async {
-    emit(state.copyWith(isLoading: true));
+    emit(const LoadingHomeAppsState());
     try {
-      final homeApps = await _db.homeApps.select().get();
-      emit(state.copyWith(homeApps: homeApps, isLoading: false));
+      final homeApps = await _homeAppsService.getAllHomeAppsWithDetails();
+      emit(LoadedHomeAppsState(homeApps));
     } catch (e) {
-      emit(state.copyWith(errorMessage: e.toString(), isLoading: false));
+      emit(ErrorHomeAppsState(e.toString()));
     }
   }
 
   // Добавление HomeApp
-  Future<void> addHomeApp(HomeAppsCompanion homeApp) async {
+  Future<void> addHomeApp(int appId) async {
     try {
-      await _db.homeApps.insertOnConflictUpdate(homeApp);
+      await _homeAppsService.addHomeApp(appId);
       await fetchHomeApps();
     } catch (e) {
-      emit(state.copyWith(errorMessage: e.toString()));
+      emit(ErrorHomeAppsState(e.toString()));
     }
   }
 
   // Удаление HomeApp
   Future<void> deleteHomeApp(int id) async {
     try {
-      await _db.homeApps.deleteWhere((tbl) => tbl.id.equals(id));
+      await _homeAppsService.deleteHomeApp(id);
       await fetchHomeApps();
     } catch (e) {
-      emit(state.copyWith(errorMessage: e.toString()));
+      emit(ErrorHomeAppsState(e.toString()));
     }
   }
 
   // Обновление позиции HomeApp
   Future<void> updateHomeAppPosition(int id, int newPosition) async {
     try {
-      await (_db.homeApps.update()
-        ..where((tbl) => tbl.id.equals(id)))
-          .write(HomeAppsCompanion(position: Value(newPosition)));
+      await _homeAppsService.updateHomeAppPosition(id, newPosition);
       await fetchHomeApps();
     } catch (e) {
-      emit(state.copyWith(errorMessage: e.toString()));
+      emit(ErrorHomeAppsState(e.toString()));
     }
   }
 }

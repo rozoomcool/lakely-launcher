@@ -1,66 +1,75 @@
 import 'dart:typed_data';
-import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:installed_apps/installed_apps.dart';
 import 'package:lakely/domain/db/database.dart';
+import 'package:lakely/domain/service/apps_service.dart';
 
-// Состояние приложения
-class AppState extends Equatable {
-  final List<App> apps;
-  final bool isLoading;
-  final String? errorMessage;
-
-  const AppState({
-    this.apps = const [],
-    this.isLoading = false,
-    this.errorMessage,
-  });
-
-  AppState copyWith({
-    List<App>? apps,
-    bool? isLoading,
-    String? errorMessage,
-  }) {
-    return AppState(
-      apps: apps ?? this.apps,
-      isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage,
-    );
-  }
+// Абстрактное состояние приложения
+abstract class AppState extends Equatable {
+  const AppState();
 
   @override
-  List<Object?> get props => [apps, isLoading, errorMessage];
+  List<Object?> get props => [];
+}
+
+// Начальное состояние
+class InitialAppState extends AppState {
+  const InitialAppState();
+}
+
+// Состояние загрузки
+class LoadingAppState extends AppState {
+  const LoadingAppState();
+}
+
+// Состояние с данными
+class LoadedAppState extends AppState {
+  final List<App> apps;
+
+  const LoadedAppState(this.apps);
+
+  @override
+  List<Object?> get props => [apps];
+}
+
+// Состояние ошибки
+class ErrorAppState extends AppState {
+  final String errorMessage;
+
+  const ErrorAppState(this.errorMessage);
+
+  @override
+  List<Object?> get props => [errorMessage];
 }
 
 // Cubit для управления состоянием
 class AppCubit extends Cubit<AppState> {
-  final AppDatabase _db;
+  final AppsService _appsService;
 
-  AppCubit(this._db) : super(const AppState());
+  AppCubit(this._appsService) : super(const InitialAppState());
 
+  // Инициализация приложения
   Future<void> init() async {
-    emit(state.copyWith(isLoading: true));
-    await fetchApps(); // Загрузка из базы данных
-
+    emit(const LoadingAppState());
     try {
-      final installedApps = await _getInstalledApps(); // Синхронизация
-      await _updateDatabase(installedApps); // Обновление базы данных
-      await fetchApps(); // Обновление UI
+      await fetchApps(); // Загружаем данные из базы данных
+      final installedApps = await _getInstalledApps(); // Получаем установленные приложения
+      await _updateDatabase(installedApps); // Обновляем базу данных
+      await fetchApps(); // Обновляем состояние с новыми данными
     } catch (e) {
-      emit(state.copyWith(errorMessage: e.toString()));
+      emit(ErrorAppState(e.toString()));
     }
   }
 
   // Загрузка приложений из базы данных
   Future<void> fetchApps() async {
-    emit(state.copyWith(isLoading: true));
+    emit(const LoadingAppState());
     try {
-      final apps = await _db.apps.select().get();
-      emit(state.copyWith(apps: apps, isLoading: false));
+      final apps = await _appsService.getAllApps();
+      emit(LoadedAppState(apps));
     } catch (e) {
-      emit(state.copyWith(errorMessage: e.toString(), isLoading: false));
+      emit(ErrorAppState(e.toString()));
     }
   }
 
@@ -79,41 +88,30 @@ class AppCubit extends Cubit<AppState> {
 
   // Обновление базы данных
   Future<void> _updateDatabase(List<Map<String, dynamic>> apps) async {
-    final existingApps = await _db.apps.select().get();
-    final existingPackageNames =
-    existingApps.map((app) => app.packageName).toSet();
+    final packageNames = apps.map((app) => app['packageName'] as String).toSet();
 
     // Добавляем или обновляем приложения
     for (var app in apps) {
-      if (!existingPackageNames.contains(app['packageName'])) {
-        await _db.apps.insertOnConflictUpdate(
-          AppsCompanion.insert(
-            title: app['title'] as String,
-            packageName: app['packageName'] as String,
-            icon: app['icon'] as Uint8List,
-          ),
-        );
-      }
+      await _appsService.addOrUpdateApp(
+        AppsCompanion.insert(
+          title: app['title'] as String,
+          packageName: app['packageName'] as String,
+          icon: app['icon'] as Uint8List,
+        ),
+      );
     }
 
-    // Удаляем приложения, которых больше нет
-    final newPackageNames =
-    apps.map((app) => app['packageName'] as String).toSet();
-    final appsToDelete =
-    existingPackageNames.difference(newPackageNames).toList();
-
-    for (var packageName in appsToDelete) {
-      await _db.apps.deleteWhere((tbl) => tbl.packageName.equals(packageName));
-    }
+    // Удаляем приложения, отсутствующие в списке
+    await _appsService.deleteMissingApps(packageNames);
   }
 
   // Удаление приложения
   Future<void> deleteApp(int id) async {
     try {
-      await _db.apps.deleteWhere((tbl) => tbl.id.equals(id));
+      await _appsService.deleteApp(id);
       await fetchApps();
     } catch (e) {
-      emit(state.copyWith(errorMessage: e.toString()));
+      emit(ErrorAppState(e.toString()));
     }
   }
 }
