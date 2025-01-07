@@ -16,3 +16,5 @@ void main() {
 
   runApp(const MainApp());
 }
+
+// dart run drift_dev schema dump lib/domain/db/database.dart schema.json
