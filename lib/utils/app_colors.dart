@@ -7,7 +7,7 @@ abstract class AppColors {
   Color get cardColor;
 }
 
-class DarkColors extends AppColors {
+class _DarkColors extends AppColors {
   @override
   Color get background => Color(0xFF0F0F0F);
 
@@ -21,7 +21,7 @@ class DarkColors extends AppColors {
   Color get textColor => Color(0xFFFCFCFC);
 }
 
-class LightColors extends AppColors {
+class _LightColors extends AppColors {
   @override
   Color get background => Color(0xFF0F0F0F);
 
@@ -37,5 +37,5 @@ class LightColors extends AppColors {
 
 class AppSettings {
 
-  static final colors = DarkColors();
+  static final colors = _DarkColors();
 }
