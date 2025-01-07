@@ -19,6 +19,7 @@ dependencies:
   flutter_bloc: ^8.1.6
 #  flutter_riverpod: ^2.6.1
   flutter_svg: ^2.0.16
+  gif: ^2.3.0
   google_fonts: ^6.2.1
   installed_apps: ^1.5.2
   intl: ^0.20.1
