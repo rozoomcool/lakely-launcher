@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:gif/gif.dart';
 import 'package:lakely/presentation/components/todo_card.dart';
+import 'package:lakely/utils/launch_apps.dart';
 
 @RoutePage()
 class WorkScreen extends StatelessWidget {
@@ -9,18 +11,57 @@ class WorkScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        children: [
-          // TodoCard()
-          ElevatedButton(onPressed: () {}, child: Text("Hello World")),
-          Card(
-            child: Padding(
+      backgroundColor: Color(0xFF000000),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // TodoCard()
+            Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("kjfsaksdjkflj;slkdjf"),
+              child: Text("Увлечения", style: Theme.of(context).textTheme.headlineSmall,),
             ),
-          ),
-        ],
+            // Center(
+            //   child: Container(
+            //     margin: EdgeInsets.all(20),
+            //       decoration: BoxDecoration(
+            //           borderRadius: BorderRadius.circular(60),
+            //           image: DecorationImage(
+            //               image: NetworkImage(
+            //                   "https://ae04.alicdn.com/kf/Sffc782493698457fa5c0f513f11aa82cL.jpg"))),
+            //       child: SizedBox(
+            //         width: 200,
+            //         height: 200,
+            //       )),
+            // ),
+            Container(
+              decoration: BoxDecoration(
+                color: Color(0xFF292929),
+                borderRadius: BorderRadius.circular(12)
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("djsk;nafkjdsjk", style: TextStyle(),),
+              ),
+            ),
+            SizedBox(height: 36,),
+            SizedBox(
+              width: double.infinity,
+                height: 50,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 36.0),
+                  child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFffa31a),
+                        foregroundColor: Colors.black
+                      ),
+                      onPressed: () {
+                    launchGoogleWithUrl("pornhub.com");
+                  }, child: Text("Начать", style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),)),
+                )),
+            SizedBox(height: 24,)
+          ],
+        ),
       ),
     );
   }

@@ -16,7 +16,9 @@ class RootScreen extends StatelessWidget {
       ],
       builder: (context, child, _) {
         final tabsRouter = AutoTabsRouter.of(context);
-        return child;
+        return Scaffold(
+          body: child,
+        );
       },
     );
   }

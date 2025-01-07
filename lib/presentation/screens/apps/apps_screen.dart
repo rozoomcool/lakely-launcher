@@ -15,24 +15,30 @@ class AppsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: BlocBuilder<AppCubit, AppState>(builder: (context, state) {
-        return ListView(
-          shrinkWrap: true,
-          children: state.apps.toSet().map((el) {
-                return Row(
-                  children: [
-                    SizedBox(
-                        width: 36,
-                        height: 36,
-                        child: Image.memory(el.icon ?? Uint8List(0))),
-                    Text(
-                      el.title ?? "",
-                      style: TextStyle(fontSize: 8),
-                    ),
-                  ],
-                );
-              }).toList() ??
-              [],
-        );
+        switch (state) {
+          case LoadedAppState:
+            state as LoadedAppState;
+            return ListView(
+              shrinkWrap: true,
+              children: state.apps.toSet().map((el) {
+                    return Row(
+                      children: [
+                        SizedBox(
+                            width: 36,
+                            height: 36,
+                            child: Image.memory(el.icon ?? Uint8List(0))),
+                        Text(
+                          el.title ?? "",
+                          style: TextStyle(fontSize: 8),
+                        ),
+                      ],
+                    );
+                  }).toList() ??
+                  [],
+            );
+          default:
+            return SizedBox();
+        }
       }),
     );
   }

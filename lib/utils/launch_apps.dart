@@ -21,6 +21,17 @@ Future<void> launchGoogle() async {
   }
 }
 
+Future<void> launchGoogleWithUrl(String url) async {
+  // var google = Uri.parse("google.search://search");
+  var google = Uri.parse("https://$url");
+
+  if (await canLaunchUrl(google)) {
+    await launchUrl(google);
+  } else {
+    throw 'Не удалось открыть приложение телефона';
+  }
+}
+
 
 
 Future<void> launchPhone() async {
