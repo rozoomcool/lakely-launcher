@@ -9,7 +9,7 @@ abstract class AppColors {
 
 class _DarkColors extends AppColors {
   @override
-  Color get background => Color(0xFF0F0F0F);
+  Color get background => Color(0xFF050505);
 
   @override
   Color get cardColor => Color(0xFF131515);
