@@ -21,10 +21,74 @@ class HomeAppsService {
           app: app,
         );
       } else {
-        throw StateError("Связанное приложение не найдено для HomeApp ID ${homeApp.id}");
+        throw StateError(
+            "Связанное приложение не найдено для HomeApp ID ${homeApp.id}");
       }
     }).toList();
   }
+
+  List<HomeApp> getAll() {
+    final homeAppBox = _store.box<HomeApp>();
+    return homeAppBox.getAll();
+  }
+
+  void reorder(int oldIndex, int newIndex) {
+    final homeAppBox = _store.box<HomeApp>();
+
+    // Получаем элемент, который нужно переместить
+    final movingApp = homeAppBox
+        .query(HomeApp_.position.equals(oldIndex))
+        .build()
+        .findFirst();
+
+    if (movingApp == null) return; // Если элемент не найден, выходим
+
+    // Если позиция не изменилась, ничего не делаем
+    if (oldIndex == newIndex) return;
+
+    // Создаём транзакцию для атомарного обновления
+    _store.runInTransaction(TxMode.write, () {
+      if (oldIndex < newIndex) {
+        // Сдвигаем элементы между oldIndex и newIndex на -1
+        final affectedApps = homeAppBox
+            .query(HomeApp_.position.between(oldIndex + 1, newIndex))
+            .build()
+            .find();
+
+        for (var app in affectedApps) {
+          app.position -= 1;
+          homeAppBox.put(app, mode: PutMode.update);
+        }
+      } else {
+        // Сдвигаем элементы между newIndex и oldIndex на +1
+        final affectedApps = homeAppBox
+            .query(HomeApp_.position.between(newIndex, oldIndex - 1))
+            .build()
+            .find();
+
+        for (var app in affectedApps) {
+          app.position += 1;
+          homeAppBox.put(app, mode: PutMode.update);
+        }
+      }
+
+      // Устанавливаем новую позицию перемещаемому элементу
+      movingApp.position = newIndex;
+      homeAppBox.put(movingApp, mode: PutMode.update);
+    });
+    normalizePositions();
+  }
+
+  void normalizePositions() {
+    final homeAppBox = _store.box<HomeApp>();
+    final apps = homeAppBox.query().order(HomeApp_.position).build().find();
+
+    for (int i = 0; i < apps.length; i++) {
+      apps[i].position = i;
+      homeAppBox.put(apps[i], mode: PutMode.update);
+    }
+  }
+
 
   /// Добавить запись в HomeApps
   void addHomeApp(int appId) {
@@ -69,7 +133,7 @@ class HomeAppsService {
       ..order(HomeApp_.position, flags: Order.descending);
     final lastHomeApp = query.build().findFirst();
 
-    return (lastHomeApp?.position ?? 0) + 1;
+    return (lastHomeApp?.position ?? -1) + 1;
   }
 }
 

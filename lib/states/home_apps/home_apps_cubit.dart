@@ -55,11 +55,19 @@ class HomeAppsCubit extends Cubit<HomeAppsState> {
   Future<void> fetchHomeApps() async {
     emit(const LoadingHomeAppsState());
     try {
-      final homeApps = await _homeAppsService.getAllHomeAppsWithDetails();
+      final homeApps = _homeAppsService.getAllHomeAppsWithDetails();
+      homeApps.sort((a, b) => a.position.compareTo(b.position));
+      debugPrint(homeApps.map((el) => el.position).toString());
       emit(LoadedHomeAppsState(homeApps));
     } catch (e) {
       emit(ErrorHomeAppsState(e.toString()));
     }
+  }
+
+  void reorderHomeApps(int oldIndex, int newIndex) {
+   _homeAppsService.reorder(oldIndex, newIndex);
+
+    fetchHomeApps();
   }
 
   // Добавление HomeApp

@@ -8,6 +8,7 @@ import 'package:lakely/presentation/components/app_list_dialog.dart';
 import 'package:lakely/states/apps_cubit/apps_cubit.dart';
 import 'package:lakely/states/home_apps/home_apps_cubit.dart';
 import 'package:lakely/utils/app_icons_cache_util.dart';
+import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 
 class HomeAppsList extends StatelessWidget {
   const HomeAppsList({super.key});
@@ -39,7 +40,7 @@ class HomeAppsList extends StatelessWidget {
                             // showAboutDialog(context: context);
                           },
                           child: Text("Добавить приложения"))),
-                  GridView.builder(
+                  ReorderableGridView.builder(
                     shrinkWrap: true,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 4,
@@ -49,6 +50,7 @@ class HomeAppsList extends StatelessWidget {
                     itemBuilder: (BuildContext context, int index) {
                       var app = homeAppsState.homeApps[index];
                       return GestureDetector(
+                        key: Key(app.position.toString()),
                         onTap: () {
                           context.read<HomeAppsCubit>().deleteHomeApp(app.id);
                         },
@@ -78,7 +80,9 @@ class HomeAppsList extends StatelessWidget {
                           ],
                         ),
                       );
-                    },
+                    }, onReorder: (int oldIndex, int newIndex) {
+                      context.read<HomeAppsCubit>().reorderHomeApps(oldIndex, newIndex);
+                  },
                   ),
                 ],
               );
@@ -92,13 +96,47 @@ class HomeAppsList extends StatelessWidget {
   }
 }
 
-// Wrap(
-// children: [
-// ...List.generate(8, (i) => Container(
-// height: 64,
-// width: 64,
-// margin: EdgeInsets.all(8),
-// color: Colors.amber,
-// ))
-// ],
-// )
+// import 'package:flutter/material.dart';
+//
+// class ReorderableGridViewExample extends StatefulWidget {
+//   @override
+//   _ReorderableGridViewExampleState createState() => _ReorderableGridViewExampleState();
+// }
+//
+// class _ReorderableGridViewExampleState extends State<ReorderableGridViewExample> {
+//   List<String> items = List.generate(10, (index) => 'Item $index');
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: const Text("Reorderable GridView")),
+//       body: ReorderableGridView(
+//         items: items,
+//         onReorder: (oldIndex, newIndex) {
+//           setState(() {
+//             if (newIndex > oldIndex) {
+//               newIndex -= 1;
+//             }
+//             final item = items.removeAt(oldIndex);
+//             items.insert(newIndex, item);
+//           });
+//         },
+//       ),
+//     );
+//   }
+// }
+
+// class ReorderableGridView extends StatelessWidget {
+//   final List<String> items;
+//   final void Function(int oldIndex, int newIndex) onReorder;
+//
+//   const ReorderableGridView({
+//     required this.items,
+//     required this.onReorder,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return
+//   }
+// }
