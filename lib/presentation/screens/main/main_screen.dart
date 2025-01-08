@@ -12,8 +12,9 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    setUiModeFullScreenImmersiveSticky();
     return Scaffold(
-      // backgroundColor: AppSettings.colors.background,
+      backgroundColor: AppSettings.colors.background,
       body: SizedBox(
         width: double.infinity,
         height: double.infinity,
