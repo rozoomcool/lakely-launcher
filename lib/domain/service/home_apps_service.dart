@@ -24,8 +24,9 @@ class HomeAppsService {
 
   /// Добавить запись в HomeApps
   Future<void> addHomeApp(int appId) async {
-    final app = await (_db.apps.select()..where((tbl) => tbl.id.equals(appId)))
-        .getSingleOrNull();
+    final apps = await (_db.apps.select()..where((tbl) => tbl.id.equals(appId)))
+        .get();
+    final app = apps.isNotEmpty ? apps.first : null;
     if (app == null) return;
     final position = await _getNextPosition();
     await _db.homeApps.insertOnConflictUpdate(
@@ -46,9 +47,10 @@ class HomeAppsService {
 
   /// Получить следующую позицию для нового элемента
   Future<int> _getNextPosition() async {
-    final lastPosition = await (_db.homeApps.select()
+    final apps = await (_db.homeApps.select()
           ..orderBy([(tbl) => OrderingTerm.desc(tbl.position)]))
-        .getSingleOrNull();
+        .get();
+    final lastPosition = apps.isNotEmpty ? apps.last : null;
     return (lastPosition?.position ?? 0) + 1;
   }
 }

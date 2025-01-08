@@ -38,7 +38,13 @@ class MainApp extends StatelessWidget {
               displayColor: Color(0xFFFDFDFD),
               bodyColor: Color(0xFFFDFDFD),
             ),
+            dialogTheme: DialogTheme.of(context).copyWith(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              backgroundColor: AppSettings.colors.cardColor,
+            ),
             cardTheme: CardTheme.of(context).copyWith(
+                color: AppSettings.colors.cardColor,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20))),
             scaffoldBackgroundColor: Colors.black),

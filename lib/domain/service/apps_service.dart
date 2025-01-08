@@ -17,9 +17,9 @@ class AppsService {
   }
 
   /// Поиск приложения по названию
-  Future<List<App>> searchAppsByTitle(String title) async {
+  Future<List<App>> searchAppsByPackageName(String packageName) async {
     return await (_db.apps.select()
-      ..where((tbl) => tbl.title.like('%$title%')))
+      ..where((tbl) => tbl.packageName.equals(packageName)))
         .get();
   }
 

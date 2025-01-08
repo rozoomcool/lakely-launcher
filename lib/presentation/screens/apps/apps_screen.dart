@@ -21,12 +21,17 @@ class AppsScreen extends StatelessWidget {
             return ListView(
               shrinkWrap: true,
               children: state.apps.toSet().map((el) {
+                    Uint8List icon = Uint8List(0);
+                    var fullAppInfo =
+                        InstalledApps.getAppInfo(el.packageName).then((value) {
+                      if (value != null && value.icon != null) {
+                        icon = value.icon!;
+                      }
+                    });
                     return Row(
                       children: [
                         SizedBox(
-                            width: 36,
-                            height: 36,
-                            child: Image.memory(el.icon ?? Uint8List(0))),
+                            width: 36, height: 36, child: Image.memory(icon)),
                         Text(
                           el.title ?? "",
                           style: TextStyle(fontSize: 8),

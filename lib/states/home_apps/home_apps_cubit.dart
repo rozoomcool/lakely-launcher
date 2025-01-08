@@ -1,6 +1,8 @@
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:installed_apps/installed_apps.dart';
 import 'package:lakely/domain/db/database.dart';
 import 'package:lakely/domain/service/home_apps_service.dart';
 
@@ -69,6 +71,7 @@ class HomeAppsCubit extends Cubit<HomeAppsState> {
       await _homeAppsService.addHomeApp(appId);
       await fetchHomeApps();
     } catch (e) {
+      debugPrint(e.toString());
       emit(ErrorHomeAppsState(e.toString()));
     }
   }

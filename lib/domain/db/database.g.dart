@@ -296,13 +296,8 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
       type: DriftSqlType.string,
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
-  static const VerificationMeta _iconMeta = const VerificationMeta('icon');
   @override
-  late final GeneratedColumn<Uint8List> icon = GeneratedColumn<Uint8List>(
-      'icon', aliasedName, false,
-      type: DriftSqlType.blob, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [id, title, packageName, icon];
+  List<GeneratedColumn> get $columns => [id, title, packageName];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -330,12 +325,6 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
     } else if (isInserting) {
       context.missing(_packageNameMeta);
     }
-    if (data.containsKey('icon')) {
-      context.handle(
-          _iconMeta, icon.isAcceptableOrUnknown(data['icon']!, _iconMeta));
-    } else if (isInserting) {
-      context.missing(_iconMeta);
-    }
     return context;
   }
 
@@ -351,8 +340,6 @@ class $AppsTable extends Apps with TableInfo<$AppsTable, App> {
           .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
       packageName: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}package_name'])!,
-      icon: attachedDatabase.typeMapping
-          .read(DriftSqlType.blob, data['${effectivePrefix}icon'])!,
     );
   }
 
@@ -366,19 +353,13 @@ class App extends DataClass implements Insertable<App> {
   final int id;
   final String title;
   final String packageName;
-  final Uint8List icon;
-  const App(
-      {required this.id,
-      required this.title,
-      required this.packageName,
-      required this.icon});
+  const App({required this.id, required this.title, required this.packageName});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['title'] = Variable<String>(title);
     map['package_name'] = Variable<String>(packageName);
-    map['icon'] = Variable<Uint8List>(icon);
     return map;
   }
 
@@ -387,7 +368,6 @@ class App extends DataClass implements Insertable<App> {
       id: Value(id),
       title: Value(title),
       packageName: Value(packageName),
-      icon: Value(icon),
     );
   }
 
@@ -398,7 +378,6 @@ class App extends DataClass implements Insertable<App> {
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       packageName: serializer.fromJson<String>(json['packageName']),
-      icon: serializer.fromJson<Uint8List>(json['icon']),
     );
   }
   @override
@@ -408,17 +387,13 @@ class App extends DataClass implements Insertable<App> {
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
       'packageName': serializer.toJson<String>(packageName),
-      'icon': serializer.toJson<Uint8List>(icon),
     };
   }
 
-  App copyWith(
-          {int? id, String? title, String? packageName, Uint8List? icon}) =>
-      App(
+  App copyWith({int? id, String? title, String? packageName}) => App(
         id: id ?? this.id,
         title: title ?? this.title,
         packageName: packageName ?? this.packageName,
-        icon: icon ?? this.icon,
       );
   App copyWithCompanion(AppsCompanion data) {
     return App(
@@ -426,7 +401,6 @@ class App extends DataClass implements Insertable<App> {
       title: data.title.present ? data.title.value : this.title,
       packageName:
           data.packageName.present ? data.packageName.value : this.packageName,
-      icon: data.icon.present ? data.icon.value : this.icon,
     );
   }
 
@@ -435,68 +409,55 @@ class App extends DataClass implements Insertable<App> {
     return (StringBuffer('App(')
           ..write('id: $id, ')
           ..write('title: $title, ')
-          ..write('packageName: $packageName, ')
-          ..write('icon: $icon')
+          ..write('packageName: $packageName')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, title, packageName, $driftBlobEquality.hash(icon));
+  int get hashCode => Object.hash(id, title, packageName);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is App &&
           other.id == this.id &&
           other.title == this.title &&
-          other.packageName == this.packageName &&
-          $driftBlobEquality.equals(other.icon, this.icon));
+          other.packageName == this.packageName);
 }
 
 class AppsCompanion extends UpdateCompanion<App> {
   final Value<int> id;
   final Value<String> title;
   final Value<String> packageName;
-  final Value<Uint8List> icon;
   const AppsCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.packageName = const Value.absent(),
-    this.icon = const Value.absent(),
   });
   AppsCompanion.insert({
     this.id = const Value.absent(),
     required String title,
     required String packageName,
-    required Uint8List icon,
   })  : title = Value(title),
-        packageName = Value(packageName),
-        icon = Value(icon);
+        packageName = Value(packageName);
   static Insertable<App> custom({
     Expression<int>? id,
     Expression<String>? title,
     Expression<String>? packageName,
-    Expression<Uint8List>? icon,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (title != null) 'title': title,
       if (packageName != null) 'package_name': packageName,
-      if (icon != null) 'icon': icon,
     });
   }
 
   AppsCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? title,
-      Value<String>? packageName,
-      Value<Uint8List>? icon}) {
+      {Value<int>? id, Value<String>? title, Value<String>? packageName}) {
     return AppsCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       packageName: packageName ?? this.packageName,
-      icon: icon ?? this.icon,
     );
   }
 
@@ -512,9 +473,6 @@ class AppsCompanion extends UpdateCompanion<App> {
     if (packageName.present) {
       map['package_name'] = Variable<String>(packageName.value);
     }
-    if (icon.present) {
-      map['icon'] = Variable<Uint8List>(icon.value);
-    }
     return map;
   }
 
@@ -523,8 +481,7 @@ class AppsCompanion extends UpdateCompanion<App> {
     return (StringBuffer('AppsCompanion(')
           ..write('id: $id, ')
           ..write('title: $title, ')
-          ..write('packageName: $packageName, ')
-          ..write('icon: $icon')
+          ..write('packageName: $packageName')
           ..write(')'))
         .toString();
   }
@@ -550,15 +507,14 @@ class $HomeAppsTable extends HomeApps with TableInfo<$HomeAppsTable, HomeApp> {
       'app_id', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      $customConstraints: 'REFERENCES apps(id) ON DELETE CASCADE');
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'UNIQUE REFERENCES apps (id) ON DELETE CASCADE'));
   static const VerificationMeta _positionMeta =
       const VerificationMeta('position');
   @override
   late final GeneratedColumn<int> position = GeneratedColumn<int>(
       'position', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+      type: DriftSqlType.int, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, appId, position];
   @override
@@ -759,6 +715,18 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [notes, apps, homeApps];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
+        [
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('apps',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('home_apps', kind: UpdateKind.delete),
+            ],
+          ),
+        ],
+      );
 }
 
 typedef $$NotesTableCreateCompanionBuilder = NotesCompanion Function({
@@ -908,14 +876,31 @@ typedef $$AppsTableCreateCompanionBuilder = AppsCompanion Function({
   Value<int> id,
   required String title,
   required String packageName,
-  required Uint8List icon,
 });
 typedef $$AppsTableUpdateCompanionBuilder = AppsCompanion Function({
   Value<int> id,
   Value<String> title,
   Value<String> packageName,
-  Value<Uint8List> icon,
 });
+
+final class $$AppsTableReferences
+    extends BaseReferences<_$AppDatabase, $AppsTable, App> {
+  $$AppsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$HomeAppsTable, List<HomeApp>> _homeAppsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.homeApps,
+          aliasName: $_aliasNameGenerator(db.apps.id, db.homeApps.appId));
+
+  $$HomeAppsTableProcessedTableManager get homeAppsRefs {
+    final manager = $$HomeAppsTableTableManager($_db, $_db.homeApps)
+        .filter((f) => f.appId.id($_item.id));
+
+    final cache = $_typedResult.readTableOrNull(_homeAppsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
 
 class $$AppsTableFilterComposer extends Composer<_$AppDatabase, $AppsTable> {
   $$AppsTableFilterComposer({
@@ -934,8 +919,26 @@ class $$AppsTableFilterComposer extends Composer<_$AppDatabase, $AppsTable> {
   ColumnFilters<String> get packageName => $composableBuilder(
       column: $table.packageName, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<Uint8List> get icon => $composableBuilder(
-      column: $table.icon, builder: (column) => ColumnFilters(column));
+  Expression<bool> homeAppsRefs(
+      Expression<bool> Function($$HomeAppsTableFilterComposer f) f) {
+    final $$HomeAppsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.homeApps,
+        getReferencedColumn: (t) => t.appId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$HomeAppsTableFilterComposer(
+              $db: $db,
+              $table: $db.homeApps,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$AppsTableOrderingComposer extends Composer<_$AppDatabase, $AppsTable> {
@@ -954,9 +957,6 @@ class $$AppsTableOrderingComposer extends Composer<_$AppDatabase, $AppsTable> {
 
   ColumnOrderings<String> get packageName => $composableBuilder(
       column: $table.packageName, builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<Uint8List> get icon => $composableBuilder(
-      column: $table.icon, builder: (column) => ColumnOrderings(column));
 }
 
 class $$AppsTableAnnotationComposer
@@ -977,8 +977,26 @@ class $$AppsTableAnnotationComposer
   GeneratedColumn<String> get packageName => $composableBuilder(
       column: $table.packageName, builder: (column) => column);
 
-  GeneratedColumn<Uint8List> get icon =>
-      $composableBuilder(column: $table.icon, builder: (column) => column);
+  Expression<T> homeAppsRefs<T extends Object>(
+      Expression<T> Function($$HomeAppsTableAnnotationComposer a) f) {
+    final $$HomeAppsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.homeApps,
+        getReferencedColumn: (t) => t.appId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$HomeAppsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.homeApps,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$AppsTableTableManager extends RootTableManager<
@@ -990,9 +1008,9 @@ class $$AppsTableTableManager extends RootTableManager<
     $$AppsTableAnnotationComposer,
     $$AppsTableCreateCompanionBuilder,
     $$AppsTableUpdateCompanionBuilder,
-    (App, BaseReferences<_$AppDatabase, $AppsTable, App>),
+    (App, $$AppsTableReferences),
     App,
-    PrefetchHooks Function()> {
+    PrefetchHooks Function({bool homeAppsRefs})> {
   $$AppsTableTableManager(_$AppDatabase db, $AppsTable table)
       : super(TableManagerState(
           db: db,
@@ -1007,30 +1025,48 @@ class $$AppsTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<String> title = const Value.absent(),
             Value<String> packageName = const Value.absent(),
-            Value<Uint8List> icon = const Value.absent(),
           }) =>
               AppsCompanion(
             id: id,
             title: title,
             packageName: packageName,
-            icon: icon,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String title,
             required String packageName,
-            required Uint8List icon,
           }) =>
               AppsCompanion.insert(
             id: id,
             title: title,
             packageName: packageName,
-            icon: icon,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) =>
+                  (e.readTable(table), $$AppsTableReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({homeAppsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (homeAppsRefs) db.homeApps],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (homeAppsRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable:
+                            $$AppsTableReferences._homeAppsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$AppsTableReferences(db, table, p0).homeAppsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.appId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
         ));
 }
 
@@ -1043,9 +1079,9 @@ typedef $$AppsTableProcessedTableManager = ProcessedTableManager<
     $$AppsTableAnnotationComposer,
     $$AppsTableCreateCompanionBuilder,
     $$AppsTableUpdateCompanionBuilder,
-    (App, BaseReferences<_$AppDatabase, $AppsTable, App>),
+    (App, $$AppsTableReferences),
     App,
-    PrefetchHooks Function()>;
+    PrefetchHooks Function({bool homeAppsRefs})>;
 typedef $$HomeAppsTableCreateCompanionBuilder = HomeAppsCompanion Function({
   Value<int> id,
   required int appId,
@@ -1056,6 +1092,23 @@ typedef $$HomeAppsTableUpdateCompanionBuilder = HomeAppsCompanion Function({
   Value<int> appId,
   Value<int> position,
 });
+
+final class $$HomeAppsTableReferences
+    extends BaseReferences<_$AppDatabase, $HomeAppsTable, HomeApp> {
+  $$HomeAppsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $AppsTable _appIdTable(_$AppDatabase db) =>
+      db.apps.createAlias($_aliasNameGenerator(db.homeApps.appId, db.apps.id));
+
+  $$AppsTableProcessedTableManager get appId {
+    final manager = $$AppsTableTableManager($_db, $_db.apps)
+        .filter((f) => f.id($_item.appId!));
+    final item = $_typedResult.readTableOrNull(_appIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
 
 class $$HomeAppsTableFilterComposer
     extends Composer<_$AppDatabase, $HomeAppsTable> {
@@ -1069,11 +1122,28 @@ class $$HomeAppsTableFilterComposer
   ColumnFilters<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get appId => $composableBuilder(
-      column: $table.appId, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<int> get position => $composableBuilder(
       column: $table.position, builder: (column) => ColumnFilters(column));
+
+  $$AppsTableFilterComposer get appId {
+    final $$AppsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.appId,
+        referencedTable: $db.apps,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AppsTableFilterComposer(
+              $db: $db,
+              $table: $db.apps,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$HomeAppsTableOrderingComposer
@@ -1088,11 +1158,28 @@ class $$HomeAppsTableOrderingComposer
   ColumnOrderings<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get appId => $composableBuilder(
-      column: $table.appId, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<int> get position => $composableBuilder(
       column: $table.position, builder: (column) => ColumnOrderings(column));
+
+  $$AppsTableOrderingComposer get appId {
+    final $$AppsTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.appId,
+        referencedTable: $db.apps,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AppsTableOrderingComposer(
+              $db: $db,
+              $table: $db.apps,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$HomeAppsTableAnnotationComposer
@@ -1107,11 +1194,28 @@ class $$HomeAppsTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<int> get appId =>
-      $composableBuilder(column: $table.appId, builder: (column) => column);
-
   GeneratedColumn<int> get position =>
       $composableBuilder(column: $table.position, builder: (column) => column);
+
+  $$AppsTableAnnotationComposer get appId {
+    final $$AppsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.appId,
+        referencedTable: $db.apps,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$AppsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.apps,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$HomeAppsTableTableManager extends RootTableManager<
@@ -1123,9 +1227,9 @@ class $$HomeAppsTableTableManager extends RootTableManager<
     $$HomeAppsTableAnnotationComposer,
     $$HomeAppsTableCreateCompanionBuilder,
     $$HomeAppsTableUpdateCompanionBuilder,
-    (HomeApp, BaseReferences<_$AppDatabase, $HomeAppsTable, HomeApp>),
+    (HomeApp, $$HomeAppsTableReferences),
     HomeApp,
-    PrefetchHooks Function()> {
+    PrefetchHooks Function({bool appId})> {
   $$HomeAppsTableTableManager(_$AppDatabase db, $HomeAppsTable table)
       : super(TableManagerState(
           db: db,
@@ -1157,9 +1261,43 @@ class $$HomeAppsTableTableManager extends RootTableManager<
             position: position,
           ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map((e) =>
+                  (e.readTable(table), $$HomeAppsTableReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({appId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (appId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.appId,
+                    referencedTable: $$HomeAppsTableReferences._appIdTable(db),
+                    referencedColumn:
+                        $$HomeAppsTableReferences._appIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
         ));
 }
 
@@ -1172,9 +1310,9 @@ typedef $$HomeAppsTableProcessedTableManager = ProcessedTableManager<
     $$HomeAppsTableAnnotationComposer,
     $$HomeAppsTableCreateCompanionBuilder,
     $$HomeAppsTableUpdateCompanionBuilder,
-    (HomeApp, BaseReferences<_$AppDatabase, $HomeAppsTable, HomeApp>),
+    (HomeApp, $$HomeAppsTableReferences),
     HomeApp,
-    PrefetchHooks Function()>;
+    PrefetchHooks Function({bool appId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;

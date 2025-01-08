@@ -75,13 +75,12 @@ class AppCubit extends Cubit<AppState> {
 
   // Получение списка установленных приложений
   Future<List<Map<String, dynamic>>> _getInstalledApps() async {
-    final installedApps = await InstalledApps.getInstalledApps(false, true);
+    final installedApps = await InstalledApps.getInstalledApps(false, false);
     return installedApps
         .where((app) => app.icon != null)
         .map((app) => {
       'title': app.name,
       'packageName': app.packageName,
-      'icon': app.icon,
     })
         .toList();
   }
@@ -92,11 +91,11 @@ class AppCubit extends Cubit<AppState> {
 
     // Добавляем или обновляем приложения
     for (var app in apps) {
+      if ((await _appsService.searchAppsByPackageName(app['packageName'])).isNotEmpty) return;
       await _appsService.addOrUpdateApp(
         AppsCompanion.insert(
           title: app['title'] as String,
           packageName: app['packageName'] as String,
-          icon: app['icon'] as Uint8List,
         ),
       );
     }

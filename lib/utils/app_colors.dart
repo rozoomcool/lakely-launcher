@@ -12,7 +12,7 @@ class _DarkColors extends AppColors {
   Color get background => Color(0xFF0F0F0F);
 
   @override
-  Color get cardColor => Color(0xFF2F3B3D);
+  Color get cardColor => Color(0xFF131515);
 
   @override
   Color get primary => Color(0xff008D8F);
