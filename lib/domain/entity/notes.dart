@@ -1,8 +1,26 @@
-// import 'package:drift/drift.dart';
-//
-// class Notes extends Table {
-//   IntColumn get id => integer().autoIncrement()();
-//   TextColumn get title => text().withLength(min: 0, max: 128)();
-//   TextColumn get content => text()();
-//   DateTimeColumn get createdAt => dateTime().nullable()();
-// }
+import 'package:objectbox/objectbox.dart';
+
+@Entity()
+class Note {
+  @Id()
+  int id = 0;
+
+  @Index()
+  String title;
+
+  String content;
+
+  @Property(type: PropertyType.date)
+  DateTime createdAt;
+
+  @Property(type: PropertyType.date)
+  DateTime updatedAt;
+
+  Note({
+    required this.title,
+    required this.content,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  })  : createdAt = createdAt ?? DateTime.now(),
+        updatedAt = updatedAt ?? DateTime.now();
+}
