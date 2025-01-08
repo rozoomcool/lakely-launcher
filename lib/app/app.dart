@@ -21,10 +21,12 @@ class MainApp extends StatelessWidget {
       providers: [
         BlocProvider(
             create: (context) =>
-                AppCubit(AppsService(ServiceLocator.get<ObjectBox>().store))..init()),
+                AppCubit(AppsService(ServiceLocator.get<ObjectBox>().store))
+                  ..init()),
         BlocProvider(
-            create: (context) =>
-                HomeAppsCubit(HomeAppsService(ServiceLocator.get<ObjectBox>().store))..init())
+            create: (context) => HomeAppsCubit(
+                HomeAppsService(ServiceLocator.get<ObjectBox>().store))
+              ..init())
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
@@ -33,8 +35,10 @@ class MainApp extends StatelessWidget {
                 GoogleFonts.aBeeZeeTextTheme(Theme.of(context).textTheme)),
         darkTheme: ThemeData.dark().copyWith(
             colorScheme: ColorScheme.fromSeed(
-                brightness: Brightness.dark,
-                seedColor: AppSettings.colors.primary),
+              brightness: Brightness.dark,
+              seedColor: AppSettings.colors.primary,
+              surface: AppSettings.colors.background,
+            ),
             textTheme: GoogleFonts.jetBrainsMonoTextTheme().apply(
               displayColor: Color(0xFFFDFDFD),
               bodyColor: Color(0xFFFDFDFD),
