@@ -1,57 +1,75 @@
-import 'package:drift/drift.dart';
-import 'package:lakely/domain/db/database.dart';
+import 'package:lakely/domain/entity/apps.dart';
+import 'package:lakely/domain/entity/home_apps.dart';
+import 'package:lakely/objectbox.g.dart';
 
 class HomeAppsService {
-  final AppDatabase _db;
+  final Store _store;
 
-  HomeAppsService(this._db);
+  HomeAppsService(this._store);
 
   /// Получить все HomeApps с подгрузкой связанных приложений
-  Future<List<HomeAppWithDetails>> getAllHomeAppsWithDetails() async {
-    final query = _db.select(_db.homeApps).join([
-      leftOuterJoin(_db.apps, _db.apps.id.equalsExp(_db.homeApps.appId)),
-    ]);
+  List<HomeAppWithDetails> getAllHomeAppsWithDetails() {
+    final homeAppBox = _store.box<HomeApp>();
 
-    final result = await query.get();
-
-    return result.map((row) {
-      final homeApp = row.readTable(_db.homeApps);
-      final app = row.readTable(_db.apps);
-      return HomeAppWithDetails(
-          id: homeApp.id, position: homeApp.position, app: app);
+    final homeApps = homeAppBox.getAll();
+    return homeApps.map((homeApp) {
+      final app = homeApp.app.target; // Подгружаем связанное приложение
+      if (app != null) {
+        return HomeAppWithDetails(
+          id: homeApp.id,
+          position: homeApp.position,
+          app: app,
+        );
+      } else {
+        throw StateError("Связанное приложение не найдено для HomeApp ID ${homeApp.id}");
+      }
     }).toList();
   }
 
   /// Добавить запись в HomeApps
-  Future<void> addHomeApp(int appId) async {
-    final apps = await (_db.apps.select()..where((tbl) => tbl.id.equals(appId)))
-        .get();
-    final app = apps.isNotEmpty ? apps.first : null;
+  void addHomeApp(int appId) {
+    final appBox = _store.box<App>();
+    final homeAppBox = _store.box<HomeApp>();
+
+    // Проверяем, существует ли приложение
+    final app = appBox.get(appId);
     if (app == null) return;
-    final position = await _getNextPosition();
-    await _db.homeApps.insertOnConflictUpdate(
-      HomeAppsCompanion.insert(appId: appId, position: position),
-    );
+
+    // Получаем следующую позицию
+    final position = _getNextPosition();
+
+    // Создаём HomeApp и устанавливаем связь
+    final homeApp = HomeApp(position: position);
+    homeApp.app.target = app;
+    homeAppBox.put(homeApp);
   }
 
   /// Удалить запись из HomeApps
-  Future<void> deleteHomeApp(int id) async {
-    await (_db.homeApps.delete()..where((tbl) => tbl.id.equals(id))).go();
+  void deleteHomeApp(int id) {
+    final homeAppBox = _store.box<HomeApp>();
+    homeAppBox.remove(id);
   }
 
   /// Обновить позицию HomeApp
-  Future<void> updateHomeAppPosition(int id, int newPosition) async {
-    await (_db.homeApps.update()..where((tbl) => tbl.id.equals(id)))
-        .write(HomeAppsCompanion(position: Value(newPosition)));
+  void updateHomeAppPosition(int id, int newPosition) {
+    final homeAppBox = _store.box<HomeApp>();
+    final homeApp = homeAppBox.get(id);
+    if (homeApp != null) {
+      homeApp.position = newPosition;
+      homeAppBox.put(homeApp);
+    }
   }
 
   /// Получить следующую позицию для нового элемента
-  Future<int> _getNextPosition() async {
-    final apps = await (_db.homeApps.select()
-          ..orderBy([(tbl) => OrderingTerm.desc(tbl.position)]))
-        .get();
-    final lastPosition = apps.isNotEmpty ? apps.last : null;
-    return (lastPosition?.position ?? 0) + 1;
+  int _getNextPosition() {
+    final homeAppBox = _store.box<HomeApp>();
+
+    // Получаем последнюю позицию
+    final query = homeAppBox.query()
+      ..order(HomeApp_.position, flags: Order.descending);
+    final lastHomeApp = query.build().findFirst();
+
+    return (lastHomeApp?.position ?? 0) + 1;
   }
 }
 
@@ -61,6 +79,9 @@ class HomeAppWithDetails {
   final int position;
   final App app;
 
-  HomeAppWithDetails(
-      {required this.id, required this.position, required this.app});
+  HomeAppWithDetails({
+    required this.id,
+    required this.position,
+    required this.app,
+  });
 }

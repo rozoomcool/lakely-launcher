@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:installed_apps/installed_apps.dart';
-import 'package:lakely/domain/db/database.dart';
+import 'package:lakely/domain/entity/apps.dart';
 import 'package:lakely/domain/service/apps_service.dart';
 
 // Абстрактное состояние приложения
@@ -66,7 +66,7 @@ class AppCubit extends Cubit<AppState> {
   Future<void> fetchApps() async {
     emit(const LoadingAppState());
     try {
-      final apps = await _appsService.getAllApps();
+      final apps = _appsService.getAllApps();
       emit(LoadedAppState(apps));
     } catch (e) {
       emit(ErrorAppState(e.toString()));
@@ -91,23 +91,23 @@ class AppCubit extends Cubit<AppState> {
 
     // Добавляем или обновляем приложения
     for (var app in apps) {
-      if ((await _appsService.searchAppsByPackageName(app['packageName'])).isNotEmpty) return;
-      await _appsService.addOrUpdateApp(
-        AppsCompanion.insert(
+      final existingApps = _appsService.searchAppsByPackageName(app['packageName']);
+      if (existingApps.isEmpty) {
+        _appsService.addOrUpdateApp(App(
           title: app['title'] as String,
           packageName: app['packageName'] as String,
-        ),
-      );
+        ));
+      }
     }
 
     // Удаляем приложения, отсутствующие в списке
-    await _appsService.deleteMissingApps(packageNames);
+    _appsService.deleteMissingApps(packageNames);
   }
 
   // Удаление приложения
   Future<void> deleteApp(int id) async {
     try {
-      await _appsService.deleteApp(id);
+      _appsService.deleteApp(id);
       await fetchApps();
     } catch (e) {
       emit(ErrorAppState(e.toString()));

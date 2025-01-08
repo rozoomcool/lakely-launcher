@@ -6,17 +6,17 @@ import 'package:lakely/states/apps_cubit/apps_cubit.dart';
 import 'package:lakely/utils/service_locator.dart';
 import 'package:lakely/utils/status_and_navigation_bar_color.dart';
 
-import 'domain/db/database.dart';
+import 'domain/db/objectbox.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   darkStatusAndNavigationBar();
-  final database = AppDatabase();
-  ServiceLocator.register(database);
+  final objectbox = await ObjectBox.create();
+  ServiceLocator.register(objectbox);
 
   runApp(const MainApp());
 }
 
 // dart run drift_dev analyze
 // dart run drift_dev identify-databases
-// dart run drift_dev schema dump lib/domain/db/database.dart schema.json
+// dart run drift_dev schema dump lib/domain/db/objectbox.dart schema.json

@@ -1,7 +1,15 @@
-import 'package:drift/drift.dart';
+import 'dart:typed_data';
 
-class Apps extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get title => text().withLength(min: 0, max: 128)();
-  TextColumn get packageName => text().unique()();
+import 'package:objectbox/objectbox.dart';
+
+@Entity()
+class App {
+  @Id()
+  int id = 0;
+
+  String title;
+  String packageName;
+  Uint8List? icon;
+
+  App({required this.title, required this.packageName, this.icon});
 }

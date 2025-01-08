@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lakely/domain/db/objectbox.dart';
 import 'package:lakely/domain/service/apps_service.dart';
 import 'package:lakely/domain/service/home_apps_service.dart';
 import 'package:lakely/router/app_router.dart';
@@ -20,10 +21,10 @@ class MainApp extends StatelessWidget {
       providers: [
         BlocProvider(
             create: (context) =>
-                AppCubit(AppsService(ServiceLocator.get()))..init()),
+                AppCubit(AppsService(ServiceLocator.get<ObjectBox>().store))..init()),
         BlocProvider(
             create: (context) =>
-                HomeAppsCubit(HomeAppsService(ServiceLocator.get()))..init())
+                HomeAppsCubit(HomeAppsService(ServiceLocator.get<ObjectBox>().store))..init())
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,

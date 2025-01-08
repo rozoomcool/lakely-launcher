@@ -1,9 +1,6 @@
-import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:installed_apps/installed_apps.dart';
-import 'package:lakely/domain/db/database.dart';
 import 'package:lakely/domain/service/home_apps_service.dart';
 
 // Абстрактное состояние HomeApps
@@ -68,31 +65,33 @@ class HomeAppsCubit extends Cubit<HomeAppsState> {
   // Добавление HomeApp
   Future<void> addHomeApp(int appId) async {
     try {
-      await _homeAppsService.addHomeApp(appId);
+      _homeAppsService.addHomeApp(appId);
       await fetchHomeApps();
     } catch (e) {
       debugPrint(e.toString());
-      emit(ErrorHomeAppsState(e.toString()));
+      // emit(ErrorHomeAppsState(e.toString()));
     }
   }
 
   // Удаление HomeApp
   Future<void> deleteHomeApp(int id) async {
     try {
-      await _homeAppsService.deleteHomeApp(id);
+      _homeAppsService.deleteHomeApp(id);
       await fetchHomeApps();
     } catch (e) {
-      emit(ErrorHomeAppsState(e.toString()));
+      debugPrint(e.toString());
+      // emit(ErrorHomeAppsState(e.toString()));
     }
   }
 
   // Обновление позиции HomeApp
   Future<void> updateHomeAppPosition(int id, int newPosition) async {
     try {
-      await _homeAppsService.updateHomeAppPosition(id, newPosition);
+      _homeAppsService.updateHomeAppPosition(id, newPosition);
       await fetchHomeApps();
     } catch (e) {
-      emit(ErrorHomeAppsState(e.toString()));
+      debugPrint(e.toString());
+      // emit(ErrorHomeAppsState(e.toString()));
     }
   }
 }

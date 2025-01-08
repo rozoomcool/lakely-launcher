@@ -1,63 +1,75 @@
-import 'package:drift/drift.dart';
-import 'package:lakely/domain/db/database.dart';
+import 'package:lakely/domain/entity/apps.dart';
+import 'package:lakely/objectbox.g.dart';
 
 class AppsService {
-  final AppDatabase _db;
+  final Store _store;
 
-  AppsService(this._db);
+  AppsService(this._store);
 
   /// Получить все приложения
-  Future<List<App>> getAllApps() async {
-    return await _db.apps.select().get();
+  List<App> getAllApps() {
+    final box = _store.box<App>();
+    return box.getAll();
   }
 
   /// Получить приложение по ID
-  Future<App?> getAppById(int id) async {
-    return await (_db.apps.select()..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
+  App? getAppById(int id) {
+    final box = _store.box<App>();
+    return box.get(id);
   }
 
-  /// Поиск приложения по названию
-  Future<List<App>> searchAppsByPackageName(String packageName) async {
-    return await (_db.apps.select()
-      ..where((tbl) => tbl.packageName.equals(packageName)))
-        .get();
+  /// Поиск приложения по имени пакета
+  List<App> searchAppsByPackageName(String packageName) {
+    final box = _store.box<App>();
+    final query = box.query(App_.packageName.equals(packageName)).build();
+    return query.find();
   }
 
   /// Добавить новое приложение
-  Future<int> insertApp(AppsCompanion app) async {
-    return await _db.apps.insert().insert(app);
+  int insertApp(App app) {
+    final box = _store.box<App>();
+    return box.put(app); // Возвращает ID вставленного объекта
   }
 
   /// Обновить существующее приложение
-  Future<int> updateApp(int id, AppsCompanion app) async {
-    return await (_db.apps.update()
-      ..where((tbl) => tbl.id.equals(id)))
-        .write(app);
+  bool updateApp(App updatedApp) {
+    final box = _store.box<App>();
+    return box.put(updatedApp) > 0; // Обновляем объект (по ID)
   }
 
   /// Удалить приложение по ID
-  Future<int> deleteApp(int id) async {
-    return await (_db.apps.delete()
-      ..where((tbl) => tbl.id.equals(id)))
-        .go();
+  bool deleteApp(int id) {
+    final box = _store.box<App>();
+    return box.remove(id); // Возвращает true, если объект удалён
   }
 
   /// Проверить существование записи по имени пакета
-  Future<bool> isAppExists(String packageName) async {
-    final count = await (_db.apps.select()
-      ..where((tbl) => tbl.packageName.equals(packageName)))
-        .get();
-    return count.isNotEmpty;
+  bool isAppExists(String packageName) {
+    final box = _store.box<App>();
+    final query = box.query(App_.packageName.equals(packageName)).build();
+    final exists = query.count() > 0;
+    query.close();
+    return exists;
   }
 
-  Future<void> addOrUpdateApp(AppsCompanion app) async {
-    await _db.apps.insertOnConflictUpdate(app);
+  /// Добавить или обновить приложение
+  void addOrUpdateApp(App app) {
+    final box = _store.box<App>();
+    box.put(app); // ObjectBox автоматически обновит объект, если он существует
   }
 
   /// Удалить приложения, отсутствующие в списке packageNames
-  Future<void> deleteMissingApps(Set<String> existingPackageNames) async {
-    await (_db.apps.delete()
-      ..where((tbl) => tbl.packageName.isNotIn(existingPackageNames)))
-        .go();
+  void deleteMissingApps(Set<String> existingPackageNames) {
+    final box = _store.box<App>();
+
+    // Создаём запрос, чтобы получить все записи
+    final query = box.query().build();
+    final apps = query.find(); // Получаем все записи
+
+    // Находим приложения, packageName которых отсутствует в existingPackageNames
+    final appsToDelete = apps.where((app) => !existingPackageNames.contains(app.packageName)).toList();
+
+    // Удаляем найденные приложения
+    box.removeMany(appsToDelete.map((app) => app.id).toList());
   }
 }

@@ -4,7 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:installed_apps/installed_apps.dart';
-import 'package:lakely/domain/db/database.dart';
+import 'package:lakely/domain/db/objectbox.dart';
 import 'package:lakely/states/apps_cubit/apps_cubit.dart';
 import 'package:lakely/states/apps_cubit/apps_cubit.dart';
 import 'package:lakely/utils/app_icons_cache_util.dart';
