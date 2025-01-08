@@ -18,17 +18,19 @@ class MainScreen extends StatelessWidget {
         width: double.infinity,
         height: double.infinity,
         child: SafeArea(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 92,
-              ),
-              SizedBox(width: double.infinity, child: ClockWidget()),
-              SizedBox(height: 56,),
-              ElevatedButton(onPressed: launchGoogle, child: Text("Поиск в Goggle")),
-              SizedBox(height: 86,),
-              HomeAppsList()
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 92,
+                ),
+                SizedBox(width: double.infinity, child: ClockWidget()),
+                SizedBox(height: 56,),
+                ElevatedButton(onPressed: launchGoogle, child: Text("Поиск в Goggle")),
+                SizedBox(height: 86,),
+                HomeAppsList()
+              ],
+            ),
           ),
         ),
       ),
@@ -38,8 +40,8 @@ class MainScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            IconButton(onPressed: launchPhone, icon: Icon(Icons.phone_rounded, size: 48,)),
-            IconButton(onPressed: launchCamera, icon: Icon(Icons.camera_alt_rounded, size: 48)),
+            IconButton(onPressed: launchPhone, icon: Icon(Icons.phone_rounded, size: 36,)),
+            IconButton(onPressed: launchCamera, icon: Icon(Icons.camera_alt_rounded, size: 36)),
           ],
         ),
       ),

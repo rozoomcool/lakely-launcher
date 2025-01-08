@@ -22,6 +22,7 @@ dependencies:
   flutter_svg: ^2.0.16
   gif: ^2.3.0
   google_fonts: ^6.2.1
+  image: ^4.5.2
   installed_apps: ^1.5.2
   intl: ^0.20.1
   json_serializable: ^6.9.0

@@ -33,6 +33,7 @@ class HomeAppsService {
   }
 
   void reorder(int oldIndex, int newIndex) {
+    normalizePositions();
     final homeAppBox = _store.box<HomeApp>();
 
     // Получаем элемент, который нужно переместить
@@ -76,7 +77,6 @@ class HomeAppsService {
       movingApp.position = newIndex;
       homeAppBox.put(movingApp, mode: PutMode.update);
     });
-    normalizePositions();
   }
 
   void normalizePositions() {
@@ -87,6 +87,11 @@ class HomeAppsService {
       apps[i].position = i;
       homeAppBox.put(apps[i], mode: PutMode.update);
     }
+  }
+
+  void deleteByAppId(int appId) {
+    final homeAppBox = _store.box<HomeApp>();
+    homeAppBox.query(HomeApp_.app.equals(appId)).build().remove();
   }
 
 
@@ -112,6 +117,7 @@ class HomeAppsService {
   void deleteHomeApp(int id) {
     final homeAppBox = _store.box<HomeApp>();
     homeAppBox.remove(id);
+    normalizePositions();
   }
 
   /// Обновить позицию HomeApp

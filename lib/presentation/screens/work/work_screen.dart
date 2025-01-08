@@ -19,21 +19,8 @@ class WorkScreen extends StatelessWidget {
             // TodoCard()
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Увлечения", style: Theme.of(context).textTheme.headlineSmall,),
+              child: Text("skdlf", style: Theme.of(context).textTheme.headlineSmall,),
             ),
-            // Center(
-            //   child: Container(
-            //     margin: EdgeInsets.all(20),
-            //       decoration: BoxDecoration(
-            //           borderRadius: BorderRadius.circular(60),
-            //           image: DecorationImage(
-            //               image: NetworkImage(
-            //                   "https://ae04.alicdn.com/kf/Sffc782493698457fa5c0f513f11aa82cL.jpg"))),
-            //       child: SizedBox(
-            //         width: 200,
-            //         height: 200,
-            //       )),
-            // ),
             Container(
               decoration: BoxDecoration(
                 color: Color(0xFF292929),
@@ -56,8 +43,8 @@ class WorkScreen extends StatelessWidget {
                         foregroundColor: Colors.black
                       ),
                       onPressed: () {
-                    launchGoogleWithUrl("pornhub.com");
-                  }, child: Text("Начать", style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),)),
+                    launchGoogleWithUrl("");
+                  }, child: Text("fdf", style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),)),
                 )),
             SizedBox(height: 24,)
           ],

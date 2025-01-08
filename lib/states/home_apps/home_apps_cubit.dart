@@ -53,7 +53,9 @@ class HomeAppsCubit extends Cubit<HomeAppsState> {
 
   // Загрузка всех HomeApps
   Future<void> fetchHomeApps() async {
-    emit(const LoadingHomeAppsState());
+    if (state is! LoadedHomeAppsState) {
+      emit(const LoadingHomeAppsState());
+    }
     try {
       final homeApps = _homeAppsService.getAllHomeAppsWithDetails();
       homeApps.sort((a, b) => a.position.compareTo(b.position));
@@ -65,7 +67,7 @@ class HomeAppsCubit extends Cubit<HomeAppsState> {
   }
 
   void reorderHomeApps(int oldIndex, int newIndex) {
-   _homeAppsService.reorder(oldIndex, newIndex);
+    _homeAppsService.reorder(oldIndex, newIndex);
 
     fetchHomeApps();
   }
@@ -92,14 +94,23 @@ class HomeAppsCubit extends Cubit<HomeAppsState> {
     }
   }
 
-  // Обновление позиции HomeApp
-  Future<void> updateHomeAppPosition(int id, int newPosition) async {
-    try {
-      _homeAppsService.updateHomeAppPosition(id, newPosition);
-      await fetchHomeApps();
-    } catch (e) {
-      debugPrint(e.toString());
-      // emit(ErrorHomeAppsState(e.toString()));
-    }
+Future<void> deleteHomeAppByAppId(int appId) async {
+  try {
+    _homeAppsService.deleteByAppId(appId);
+    await fetchHomeApps();
+  } catch (e) {
+    debugPrint(e.toString());
+    // emit(ErrorHomeAppsState(e.toString()));
   }
 }
+
+// Обновление позиции HomeApp
+Future<void> updateHomeAppPosition(int id, int newPosition) async {
+  try {
+    _homeAppsService.updateHomeAppPosition(id, newPosition);
+    await fetchHomeApps();
+  } catch (e) {
+    debugPrint(e.toString());
+    // emit(ErrorHomeAppsState(e.toString()));
+  }
+}}

@@ -24,7 +24,7 @@ class ClockWidget extends StatelessWidget {
                   ?.copyWith(fontFamily: GoogleFonts.sixtyfour().fontFamily),
             ),
             Text(DateFormat('EEE, dd MMM yyyy').format(time),
-                style: Theme.of(context).textTheme.headlineMedium),
+                style: Theme.of(context).textTheme.headlineSmall),
           ],
         );
       },
