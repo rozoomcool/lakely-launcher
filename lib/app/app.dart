@@ -4,9 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lakely/domain/db/objectbox.dart';
 import 'package:lakely/domain/service/apps_service.dart';
 import 'package:lakely/domain/service/home_apps_service.dart';
+import 'package:lakely/domain/service/notes_service.dart';
 import 'package:lakely/router/app_router.dart';
 import 'package:lakely/states/apps_cubit/apps_cubit.dart';
 import 'package:lakely/states/home_apps/home_apps_cubit.dart';
+import 'package:lakely/states/notes_cubit/notes_cubit.dart';
 import 'package:lakely/utils/app_colors.dart';
 import 'package:lakely/utils/service_locator.dart';
 
@@ -26,6 +28,10 @@ class MainApp extends StatelessWidget {
         BlocProvider(
             create: (context) => HomeAppsCubit(
                 HomeAppsService(ServiceLocator.get<ObjectBox>().store))
+              ..init()),
+        BlocProvider(
+            create: (context) => NotesCubit(
+                NotesService(ServiceLocator.get<ObjectBox>().store))
               ..init())
       ],
       child: MaterialApp.router(

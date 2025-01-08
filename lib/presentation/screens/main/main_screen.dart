@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:lakely/presentation/components/clock_widget.dart';
@@ -13,39 +15,44 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     setUiModeFullScreenImmersiveSticky();
-    return Scaffold(
-      backgroundColor: AppSettings.colors.background,
-      body: SizedBox(
-        width: double.infinity,
-        height: double.infinity,
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 92,
+    return Stack(
+      children: [
+        Scaffold(
+          // backgroundColor: AppSettings.colors.background,
+          backgroundColor: Colors.transparent,
+          body: SizedBox(
+            width: double.infinity,
+            height: double.infinity,
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 92,
+                    ),
+                    SizedBox(width: double.infinity, child: ClockWidget()),
+                    SizedBox(height: 56,),
+                    ElevatedButton(onPressed: launchGoogle, child: Text("Поиск в Goggle")),
+                    SizedBox(height: 86,),
+                    HomeAppsList()
+                  ],
                 ),
-                SizedBox(width: double.infinity, child: ClockWidget()),
-                SizedBox(height: 56,),
-                ElevatedButton(onPressed: launchGoogle, child: Text("Поиск в Goggle")),
-                SizedBox(height: 86,),
-                HomeAppsList()
+              ),
+            ),
+          ),
+          bottomNavigationBar: BottomAppBar(
+            color: Colors.transparent,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                IconButton(onPressed: launchPhone, icon: Icon(Icons.phone_rounded, size: 36,)),
+                IconButton(onPressed: launchCamera, icon: Icon(Icons.camera_alt_rounded, size: 36)),
               ],
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.transparent,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            IconButton(onPressed: launchPhone, icon: Icon(Icons.phone_rounded, size: 36,)),
-            IconButton(onPressed: launchCamera, icon: Icon(Icons.camera_alt_rounded, size: 36)),
-          ],
-        ),
-      ),
+      ],
     );
   }
 }
