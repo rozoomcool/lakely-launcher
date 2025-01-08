@@ -58,10 +58,46 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "3:7730179366278864334",
+      "lastPropertyId": "5:8667841703089109489",
+      "name": "Note",
+      "properties": [
+        {
+          "id": "1:2515627500331787591",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3129320554079760046",
+          "name": "title",
+          "type": 9,
+          "flags": 2048,
+          "indexId": "2:5921551192212651072"
+        },
+        {
+          "id": "3:5576901671934384489",
+          "name": "content",
+          "type": 9
+        },
+        {
+          "id": "4:5267919830118773090",
+          "name": "createdAt",
+          "type": 10
+        },
+        {
+          "id": "5:8667841703089109489",
+          "name": "updatedAt",
+          "type": 10
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "2:415372610270974347",
-  "lastIndexId": "1:3499812411597887625",
+  "lastEntityId": "3:7730179366278864334",
+  "lastIndexId": "2:5921551192212651072",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
