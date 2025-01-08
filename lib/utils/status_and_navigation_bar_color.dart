@@ -19,8 +19,8 @@ void darkStatusAndNavigationBar() {
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       statusBarBrightness: Brightness.dark,
-      // statusBarColor: AppSettings.colors.background,
-      statusBarColor: Colors.transparent,
+      statusBarColor: AppSettings.colors.background,
+      // statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
       systemNavigationBarColor: AppSettings.colors.background,
       // systemNavigationBarColor: Colors.transparent,
@@ -28,9 +28,16 @@ void darkStatusAndNavigationBar() {
       systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
-  SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.immersiveSticky,
-      overlays: [ SystemUiOverlay.top ]
+}
+
+void setUiModeFullScreenManual() {
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+      overlays: [SystemUiOverlay.top]);
+}
+
+void setUiModeFullScreenImmersiveSticky() {
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+      overlays: [SystemUiOverlay.top]
   );
 }
 
