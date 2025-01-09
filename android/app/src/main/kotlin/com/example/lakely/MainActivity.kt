@@ -1,4 +1,4 @@
-package com.example.lakely
+package com.govzcode.lakely
 
 import io.flutter.embedding.android.FlutterActivity
 
