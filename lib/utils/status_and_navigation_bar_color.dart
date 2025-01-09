@@ -18,38 +18,41 @@ import 'app_colors.dart';
 void darkStatusAndNavigationBar() {
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
-      statusBarBrightness: Brightness.dark,
-      statusBarColor: AppSettings.colors.background,
-      // statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: AppSettings.colors.background,
+      // statusBarBrightness: Brightness.dark,
+      // statusBarColor: AppSettings.colors.background,
+      // // statusBarColor: Colors.transparent,
+      // statusBarIconBrightness: Brightness.light,
+      // // systemNavigationBarColor: AppSettings.colors.background,
       // systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: AppSettings.colors.background,
-      systemNavigationBarIconBrightness: Brightness.dark,
+      // // systemNavigationBarDividerColor: AppSettings.colors.background,
+      // systemNavigationBarIconBrightness: Brightness.dark,
+      systemNavigationBarContrastEnforced: false,
+      systemStatusBarContrastEnforced: false
     ),
   );
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 }
 
-void setUiModeFullScreenManual() {
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-      overlays: [SystemUiOverlay.top]);
-}
+// void setUiModeFullScreenManual() {
+//   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+//       overlays: [SystemUiOverlay.top]);
+// }
+//
+// void setUiModeFullScreenImmersiveSticky() {
+//   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+//       overlays: [SystemUiOverlay.top]
+//   );
+// }
 
-void setUiModeFullScreenImmersiveSticky() {
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-      overlays: [SystemUiOverlay.top]
-  );
-}
-
-void lightStatusAndNavigationBar() {
-  SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(
-      statusBarBrightness: Brightness.dark,
-      statusBarColor: Colors.white,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.white,
-      systemNavigationBarDividerColor: Colors.white,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ),
-  );
-}
+// void lightStatusAndNavigationBar() {
+//   SystemChrome.setSystemUIOverlayStyle(
+//     SystemUiOverlayStyle(
+//       statusBarBrightness: Brightness.dark,
+//       statusBarColor: Colors.white,
+//       statusBarIconBrightness: Brightness.dark,
+//       systemNavigationBarColor: Colors.white,
+//       systemNavigationBarDividerColor: Colors.white,
+//       systemNavigationBarIconBrightness: Brightness.dark,
+//     ),
+//   );
+// }

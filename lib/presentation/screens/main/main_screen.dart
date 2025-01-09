@@ -14,10 +14,9 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    setUiModeFullScreenImmersiveSticky();
+    // setUiModeFullScreenImmersiveSticky();
     return Stack(
       children: [
-
         Scaffold(
           // backgroundColor: AppSettings.colors.background,
           backgroundColor: Colors.transparent,

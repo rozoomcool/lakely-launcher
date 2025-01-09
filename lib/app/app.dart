@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_quill/translations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lakely/domain/db/objectbox.dart';
 import 'package:lakely/domain/service/apps_service.dart';
@@ -35,6 +36,7 @@ class MainApp extends StatelessWidget {
               ..init())
       ],
       child: MaterialApp.router(
+        localizationsDelegates: FlutterQuillLocalizations.localizationsDelegates,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
             textTheme:

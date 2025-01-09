@@ -29,6 +29,25 @@ class AppsRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [EditNoteScreen]
+class EditNoteRoute extends PageRouteInfo<void> {
+  const EditNoteRoute({List<PageRouteInfo>? children})
+      : super(
+          EditNoteRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'EditNoteRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const EditNoteScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [MainScreen]
 class MainRoute extends PageRouteInfo<void> {
   const MainRoute({List<PageRouteInfo>? children})
