@@ -20,6 +20,15 @@ class WorkScreen extends StatefulWidget {
 }
 
 class _WorkScreenState extends State<WorkScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.router.addListener(() {
+      context.read<NotesCubit>().fetchNotes();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // setUiModeFullScreenImmersiveSticky();
@@ -50,7 +59,10 @@ class _WorkScreenState extends State<WorkScreen> {
               NotesList(
                   notes: state is NotesLoaded ? state.notes : [],
                   isError: state is NotesError,
-                  isLoading: state is NotesLoading)
+                  isLoading: state is NotesLoading,
+                  onNoteTap: (int noteId) => context.router.push(EditNoteRoute(id: noteId)),
+                  onDelete: (int noteId) => context.read<NotesCubit>().deleteNoteById(noteId),
+              )
             ],
           ),
           floatingActionButton: FloatingActionButton(

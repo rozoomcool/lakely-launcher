@@ -22,14 +22,16 @@ void darkStatusAndNavigationBar() {
       // statusBarColor: AppSettings.colors.background,
       // // statusBarColor: Colors.transparent,
       // statusBarIconBrightness: Brightness.light,
-      // // systemNavigationBarColor: AppSettings.colors.background,
-      // systemNavigationBarColor: Colors.transparent,
-      // // systemNavigationBarDividerColor: AppSettings.colors.background,
-      // systemNavigationBarIconBrightness: Brightness.dark,
+      // systemNavigationBarColor: AppSettings.colors.background,
+      systemNavigationBarColor: Colors.transparent,
+      // systemNavigationBarDividerColor: AppSettings.colors.background,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
       systemNavigationBarContrastEnforced: false,
       systemStatusBarContrastEnforced: false
     ),
   );
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top]);
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 }
 

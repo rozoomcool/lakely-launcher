@@ -30,10 +30,17 @@ class AppsRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [EditNoteScreen]
-class EditNoteRoute extends PageRouteInfo<void> {
-  const EditNoteRoute({List<PageRouteInfo>? children})
-      : super(
+class EditNoteRoute extends PageRouteInfo<EditNoteRouteArgs> {
+  EditNoteRoute({
+    Key? key,
+    int? id,
+    List<PageRouteInfo>? children,
+  }) : super(
           EditNoteRoute.name,
+          args: EditNoteRouteArgs(
+            key: key,
+            id: id,
+          ),
           initialChildren: children,
         );
 
@@ -42,9 +49,30 @@ class EditNoteRoute extends PageRouteInfo<void> {
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const EditNoteScreen();
+      final args = data.argsAs<EditNoteRouteArgs>(
+          orElse: () => const EditNoteRouteArgs());
+      return EditNoteScreen(
+        key: args.key,
+        id: args.id,
+      );
     },
   );
+}
+
+class EditNoteRouteArgs {
+  const EditNoteRouteArgs({
+    this.key,
+    this.id,
+  });
+
+  final Key? key;
+
+  final int? id;
+
+  @override
+  String toString() {
+    return 'EditNoteRouteArgs{key: $key, id: $id}';
+  }
 }
 
 /// generated route for

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:lakely/domain/entity/notes.dart';
+import 'package:lakely/objectbox.g.dart';
 import 'package:lakely/utils/app_colors.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -9,11 +11,15 @@ class NotesList extends StatelessWidget {
       {super.key,
       required this.notes,
       required this.isError,
-      required this.isLoading});
+      required this.isLoading,
+      required this.onNoteTap,
+      required this.onDelete});
 
   final List<Note> notes;
   final bool isError;
   final bool isLoading;
+  final void Function(int) onNoteTap;
+  final void Function(int) onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -63,21 +69,41 @@ class NotesList extends StatelessWidget {
             );
           });
     }
-    return SliverAnimatedList(
-        initialItemCount: notes.length,
-        itemBuilder: (context, index, animation) {
-          var note = notes[index];
+    return SliverList(
+      delegate: SliverChildListDelegate([
+        ...notes.map((note) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-            child: ListTile(
-              tileColor: AppSettings.colors.cardColor,
-              title: Text(note.title),
-              subtitle: Text(
-                  DateFormat('EEE, dd/MMM/yyyy HH:mm').format(note.updatedAt)),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
+            child: Slidable(
+              key: Key(note.id.toString()),
+              startActionPane: ActionPane(
+                motion: ScrollMotion(),
+                children: [
+                  SlidableAction(
+                    onPressed: (context) {
+                      onDelete(note.id);
+                    },
+                    backgroundColor: Color(0xFFFF5449),
+                    foregroundColor: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    icon: Icons.delete,
+                    label: 'Delete',
+                  ),
+                ],
+              ),
+              child: ListTile(
+                onTap: () => onNoteTap(note.id),
+                tileColor: AppSettings.colors.cardColor,
+                title: Text(note.title),
+                subtitle: Text(DateFormat('EEE, dd/MMM/yyyy HH:mm')
+                    .format(note.updatedAt)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+              ),
             ),
           );
-        });
+        }).toList()
+      ]),
+    );
   }
 }

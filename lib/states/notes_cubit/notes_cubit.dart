@@ -88,7 +88,6 @@ class NotesCubit extends Cubit<NotesState> {
 
   /// Удалить заметку
   Future<void> deleteNoteById(int id) async {
-    emit(const NotesLoading());
     try {
       _notesService.deleteNoteById(id);
       await fetchNotes(); // Обновляем список заметок
