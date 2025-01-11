@@ -53,6 +53,7 @@ class NotesCubit extends Cubit<NotesState> {
     emit(const NotesLoading());
     try {
       final notes = _notesService.getAllNotes();
+      notes.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       emit(NotesLoaded(notes));
     } catch (e) {
       emit(NotesError(e.toString()));

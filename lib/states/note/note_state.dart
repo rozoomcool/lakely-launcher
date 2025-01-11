@@ -38,8 +38,8 @@ class NoteState extends Equatable {
     return copyWith(error: null, isLoading: true, isModified: false);
   }
 
-  NoteState copyToModified() {
-    return copyWith(error: null, isLoading: false, isModified: true);
+  NoteState copyToModified(Note note) {
+    return copyWith(note: note, error: null, isLoading: false, isModified: true);
   }
 
   NoteState copyToLoaded(Note note) {

@@ -49,7 +49,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
       final updatedNote = state.note!
         ..title = event.title ?? state.note!.title
         ..content = event.content ?? state.note!.content;
-      emit(state.copyWith(note: updatedNote, isModified: true));
+      emit(state.copyToModified(updatedNote));
     }
   }
 
