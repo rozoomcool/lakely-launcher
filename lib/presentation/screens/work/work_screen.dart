@@ -73,20 +73,25 @@ class _WorkScreenState extends State<WorkScreen> {
           ),
           bottomNavigationBar: BottomAppBar(
             color: AppSettings.colors.background,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                IconButton(
-                    onPressed: () {}, icon: Icon(Icons.view_list_rounded)),
-                IconButton(
-                    onPressed: () {}, icon: Icon(Icons.grid_view_rounded)),
-                IconButton(
-                    onPressed: () {}, icon: Icon(Icons.account_tree_rounded)),
-              ],
-            ),
+            child: Center(child: Text("Made by Daddy"),),
           ),
         );
       },
     );
   }
 }
+
+// BottomAppBar(
+// color: AppSettings.colors.background,
+// child: Row(
+// mainAxisAlignment: MainAxisAlignment.spaceAround,
+// children: [
+// IconButton(
+// onPressed: () {}, icon: Icon(Icons.view_list_rounded)),
+// IconButton(
+// onPressed: () {}, icon: Icon(Icons.grid_view_rounded)),
+// IconButton(
+// onPressed: () {}, icon: Icon(Icons.account_tree_rounded)),
+// ],
+// ),
+// )

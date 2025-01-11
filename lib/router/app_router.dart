@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:lakely/presentation/screens/apps/apps_screen.dart';
-import 'package:lakely/presentation/screens/edit_note/edit_node_screen.dart';
+import 'package:lakely/presentation/screens/edit_note/edit_note_screen.dart';
 import 'package:lakely/presentation/screens/main/main_screen.dart';
 import 'package:lakely/presentation/screens/root/root_screen.dart';
 import 'package:lakely/presentation/screens/work/work_screen.dart';

@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
@@ -73,7 +74,7 @@ class NotesList extends StatelessWidget {
       delegate: SliverChildListDelegate([
         ...notes.map((note) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
             child: Slidable(
               key: Key(note.id.toString()),
               startActionPane: ActionPane(
@@ -85,9 +86,23 @@ class NotesList extends StatelessWidget {
                     },
                     backgroundColor: Color(0xFFFF5449),
                     foregroundColor: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    icon: Icons.delete,
-                    label: 'Delete',
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        bottomLeft: Radius.circular(20)),
+                    icon: Icons.delete_rounded,
+                    // label: 'Delete',
+                  ),
+                  SlidableAction(
+                    onPressed: (context) {
+                      onDelete(note.id);
+                    },
+                    backgroundColor: AppSettings.colors.primary,
+                    foregroundColor: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20),
+                        bottomRight: Radius.circular(20)),
+                    icon: Icons.share_rounded,
+                    // label: 'Share',
                   ),
                 ],
               ),

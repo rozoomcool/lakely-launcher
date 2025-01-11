@@ -18,8 +18,7 @@ class MainScreen extends StatelessWidget {
     return Stack(
       children: [
         Scaffold(
-          // backgroundColor: AppSettings.colors.background,
-          backgroundColor: Colors.transparent,
+          backgroundColor: AppSettings.colors.background,
           body: SizedBox(
             width: double.infinity,
             height: double.infinity,
